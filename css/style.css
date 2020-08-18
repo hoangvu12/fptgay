@@ -1,0 +1,136 @@
+@import url("https://fonts.googleapis.com/css2?family=Baloo+Tamma+2:wght@500&family=Poppins&display=swap");
+
+.video {
+  height: 540px;
+  width: 960px;
+}
+
+.video > video-js {
+  width: 100%;
+  height: 100%;
+}
+
+.wrapper {
+  background: #333;
+  padding: 50px;
+  display: none;
+}
+
+.wrapper > div {
+  margin: 20px;
+}
+
+.episodes {
+  height: 540px;
+  width: 560px;
+  background: transparent;
+}
+
+.flex {
+  display: flex;
+}
+
+.episode-tag {
+  float: left;
+  color: whitesmoke;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 25px;
+  border-bottom: 1px solid #ddd;
+}
+
+.episodes-content {
+  height: 460px;
+  width: 400px;
+  background: transparent;
+  margin-top: 50px;
+  overflow: auto;
+}
+
+.episodes-item,
+.anime-item {
+  padding: 20px;
+  border: 1px solid black;
+}
+
+.info {
+  padding-left: 125px;
+  padding-bottom: 10px;
+}
+
+.episode-title,
+.anime-title {
+  font-size: 22px;
+  color: #1ab394;
+  margin: 0;
+  font-family: "Open Sans", sans-serif;
+}
+
+.episode-views,
+.anime-views {
+  color: #ccc;
+  margin: 0;
+  font-family: "Open Sans", sans-serif;
+}
+
+.episode-thumbnail,
+.anime-thumbnail {
+  float: left;
+  width: 106px;
+  height: 60px;
+}
+
+.search-results {
+  margin: 20px auto;
+  background: #333;
+  width: 50%;
+}
+
+button {
+  background-color: #44c767;
+  border-radius: 28px;
+  border: 1px solid #18ab29;
+  font-family: "Poppins", sans-serif;
+  display: block;
+  cursor: pointer;
+  color: #ffffff;
+  font-size: 17px;
+  padding: 16px 31px;
+  text-decoration: none;
+  text-shadow: 0px 1px 0px #2f6627;
+  margin: auto;
+  width: 120px;
+  margin-top: 8px;
+}
+button:hover {
+  background-color: #5cbf2a;
+}
+button:active {
+  position: relative;
+  top: 1px;
+}
+
+input[type="text"] {
+  display: block;
+  width: 300px;
+  padding: 10px 0 10px 15px;
+  font-family: "Baloo Tamma 2", sans-serif;
+  font-weight: 1000;
+  color: #377d6a;
+  background: #efefef;
+  border: 0;
+  border-radius: 3px;
+  outline: 0;
+  transition: all 0.3s ease-in-out;
+  margin: 0 auto;
+  font-size: 20px;
+}
+
+.vjs-menu-button.vjs-menu-button-popup.vjs-control.vjs-button.vjs-max-quality-selector-button
+  button {
+  padding-top: 0px;
+  padding-bottom: 0px;
+  height: 20px;
+  margin-top: 5px;
+  padding-right: 20px;
+  padding-left: 27px;
+}

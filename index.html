@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <title>FPTGay</title>
+    <link href="https://vjs.zencdn.net/7.7.6/video-js.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/videojs-max-quality-selector/dist/videojs-max-quality-selector.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="search">
+      <div class="search-area">
+        <input type="text" id="animeName" placeholder="Nhập tên Anime" />
+        <!-- <button onclick="search()">Tìm</button> -->
+      </div>
+
+      <div class="search-results"></div>
+    </div>
+
+    <div class="wrapper">
+      <div class="video 1">
+        <video-js
+          id="my_video_1"
+          class="vjs-big-play-centered vjs-fluid"
+          controls
+          autoplay
+          preload="auto"
+        >
+        </video-js>
+      </div>
+
+      <div class="episodes">
+        <div class="episodes-header">
+          <div class="episode-tag">Danh sách tập</div>
+        </div>
+
+        <div class="episodes-content">
+          <div class="episodes-item" data-index="0">
+            <img
+              class="episode-thumbnail"
+              src="https://i.imacdn.com/vg/2020/07/12/52cd22b981444914_e2024e34e7f46aaa_3566115945428282118684.jpg"
+            />
+            <div class="episode-title info">Trailer</div>
+            <div class="episode-views info">31,130 lượt xem</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/video.js/dist/video.js"></script>
+    <script src="https://unpkg.com/browse/@videojs/http-streaming@1.13.3/dist/videojs-http-streaming.min.js"></script>
+    <script src="https://unpkg.com/videojs-max-quality-selector/dist/videojs-max-quality-selector.min.js"></script>
+    <script src="https://unpkg.com/videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js"></script>
+    <script src="./js/script.js"></script>
+  </body>
+</html>
