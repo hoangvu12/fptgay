@@ -50,6 +50,14 @@ class FPTPlay {
 }
 
 var player = videojs("my_video_1");
+
+player.ready(function () {
+  this.hotkeys({
+    seekStep: 10,
+    alwaysCaptureHotkeys: true,
+  });
+});
+
 let animeId;
 let episode;
 const fptplay = new FPTPlay();
@@ -63,8 +71,7 @@ player.on("timeupdate", function () {
   }
 
   if (!episode) episode = 1;
-  // const currentEpisode = document.querySelector("h1.episode").dataset.episode;
-  // const currentAnime = document.querySelector("h1.title").innerText;
+
   const currentPlayTime = player.currentTime();
 
   let max = Number(episode);
@@ -76,16 +83,9 @@ player.on("timeupdate", function () {
 
   episodesHolder["latest"] = String(max);
 
-  // const timeAndEpisode = { episode: currentEpisode, time: currentPlayTime };
   episodesHolder[episode] = { time: currentPlayTime };
-  // episodesHolder["3"] = { time: 12.192185 };
   localStorage[animeId] = JSON.stringify(episodesHolder);
 });
-
-// player.on("loadedmetadata", function () {
-//   player.play();
-//   onLoadedMetadata();
-// });
 
 function onLoadedMetadata() {
   const storage = JSON.parse(localStorage[animeId]);
@@ -96,11 +96,6 @@ function onLoadedMetadata() {
   } else {
     time = storage[episode]["time"];
   }
-
-  console.log(episode, time);
-
-  // const currentAnime = document.querySelector("h1.title").innerText;
-  // const currentEpisode = document.querySelector("h1.episode").innerText;
 
   var lastTime = time.toString().split(".")[0];
   player.currentTime(lastTime);
@@ -224,7 +219,7 @@ document
     await loadPlayer({ title });
   });
 
-let typingTimer; //timer identifier
+let typingTimer;
 const doneTypingInterval = 2000;
 const inputField = document.querySelector("#animeName");
 
@@ -910,21 +905,3 @@ function second(e) {
     return t;
   })(n);
 }
-
-// const videoSource =
-//   "http://vod02-cdn.fptplay.net/ovod/_definst_/mp4:mp4/fplay/720p/tvseries/anime/sakurasou/sakurasou_no_pet_na_kanojo_ep02.mp4/playlist.m3u8?token=eyJoYXNoX3ZhbHVlIjogIjVhMTBmYjJlZjI2ODAzMTQ5YTU0OGFmZWQ4NDgzMzQ5IiwgInZpZGVvX2lkIjogIjU0N2VkYWNjMTdkYzEzNDZmMWJkNjAwMiIsICJzZXJ2ZXJfdGltZSI6IDE1OTc5MzY1NDksICJ2YWxpZF9taW51dGVzIjogNzIwfQ";
-
-// videojs.Hls.xhr.beforeRequest = function (options) {
-//   options.uri = `http://127.0.0.1:8080/${options.uri}`;
-//   return options;
-// };
-
-// var player = videojs("my_video_1");
-// player.src({
-//   src: videoSource,
-//   type: "application/x-mpegURL",
-// });
-
-// player.maxQualitySelector({
-//   defaultQuality: 2,
-// });

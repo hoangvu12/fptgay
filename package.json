@@ -1,0 +1,22 @@
+{
+  "name": "fptplay",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoangvu12/fptgay.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hoangvu12/fptgay/issues"
+  },
+  "homepage": "https://github.com/hoangvu12/fptgay#readme",
+  "dependencies": {
+    "videojs-hotkeys": "^0.2.27"
+  }
+}
