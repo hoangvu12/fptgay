@@ -54,7 +54,6 @@ var player = videojs("my_video_1");
 player.ready(function () {
   this.hotkeys({
     seekStep: 10,
-    alwaysCaptureHotkeys: true,
   });
 });
 
@@ -127,8 +126,6 @@ async function loadPlayer({ title }) {
     episode = 1;
   }
 
-  console.log(episode);
-
   const currentTitle = document.querySelector(".current .title");
   const currentEpisode = document.querySelector(".current .episode");
   const currentButton = document.querySelector(
@@ -148,10 +145,10 @@ async function loadPlayer({ title }) {
 
   document.querySelector(".wrapper").style.display = "block";
 
-  videojs.Hls.xhr.beforeRequest = function (options) {
-    options.uri = `http://127.0.0.1:8080/${options.uri}`;
-    return options;
-  };
+  // videojs.Hls.xhr.beforeRequest = function (options) {
+  //   options.uri = `http://127.0.0.1:8080/${options.uri}`;
+  //   return options;
+  // };
 
   const videoSource = await fptplay.getVideoSource({ id: animeId, episode });
 
