@@ -49,41 +49,117 @@ class FPTPlay {
   }
 }
 
-var animeId;
+var player = videojs("my_video_1");
+let animeId;
+let episode;
 const fptplay = new FPTPlay();
 
+player.on("timeupdate", function () {
+  let episodesHolder;
+  if (!localStorage[animeId]) {
+    episodesHolder = {};
+  } else {
+    episodesHolder = JSON.parse(localStorage[animeId]);
+  }
+
+  if (!episode) episode = 1;
+  // const currentEpisode = document.querySelector("h1.episode").dataset.episode;
+  // const currentAnime = document.querySelector("h1.title").innerText;
+  const currentPlayTime = player.currentTime();
+
+  let max = Number(episode);
+  for (let key in episodesHolder) {
+    if (Number(key) >= max) {
+      max = Number(key);
+    }
+  }
+
+  episodesHolder["latest"] = String(max);
+
+  // const timeAndEpisode = { episode: currentEpisode, time: currentPlayTime };
+  episodesHolder[episode] = { time: currentPlayTime };
+  // episodesHolder["3"] = { time: 12.192185 };
+  localStorage[animeId] = JSON.stringify(episodesHolder);
+});
+
+// player.on("loadedmetadata", function () {
+//   player.play();
+//   onLoadedMetadata();
+// });
+
+function onLoadedMetadata() {
+  const storage = JSON.parse(localStorage[animeId]);
+  let time;
+  if (!episode) {
+    const latestEpisode = storage["latest"];
+    time = storage[latestEpisode]["time"];
+  } else {
+    time = storage[episode]["time"];
+  }
+
+  console.log(episode, time);
+
+  // const currentAnime = document.querySelector("h1.title").innerText;
+  // const currentEpisode = document.querySelector("h1.episode").innerText;
+
+  var lastTime = time.toString().split(".")[0];
+  player.currentTime(lastTime);
+}
+
 function loadEpisodes(max) {
-  const parent = document.querySelector(".episodes-content");
+  const parent = document.querySelector(".episodes-list");
 
   removeChild(parent);
 
   for (let i = 1; i <= max; i++) {
     const holder = document.createElement("div");
-    const imageElement = document.createElement("img");
-    const titleElement = document.createElement("div");
-    const viewsElement = document.createElement("div");
+    const button = document.createElement("button");
 
-    holder.className = "episodes-item";
+    holder.className = "episode-button";
     holder.dataset.episode = i;
-    titleElement.className = "episode-title info";
-    titleElement.innerText = `Tập ${i}`;
+    button.className = "episode";
+    button.innerText = `Tập ${i}`;
 
-    addChildren(holder, [imageElement, titleElement, viewsElement]);
+    addChildren(holder, [button]);
     parent.appendChild(holder);
   }
 }
 
-async function loadPlayer(animeId, episode = 1) {
-  document.querySelector(".wrapper").style.display = "flex";
+async function loadPlayer({ title }) {
+  if (localStorage[animeId] && !episode) {
+    episode = JSON.parse(localStorage[animeId])["latest"];
+  } else if (!episode) {
+    episode = 1;
+  }
+
+  console.log(episode);
+
+  const currentTitle = document.querySelector(".current .title");
+  const currentEpisode = document.querySelector(".current .episode");
+  const currentButton = document.querySelector(
+    `[data-episode="${episode}"] button`
+  );
+
+  document
+    .querySelector(".episodes-list")
+    .querySelectorAll("*")
+    .forEach((e) => (e.style.color = "white"));
+
+  currentButton.style.color = "#f5740a";
+
+  currentEpisode.dataset.episode = episode;
+  currentEpisode.innerText = `Tập ${episode}`;
+  currentTitle.innerText = title;
+
+  document.querySelector(".wrapper").style.display = "block";
 
   videojs.Hls.xhr.beforeRequest = function (options) {
-    options.uri = `https://general-proxy.herokuapp.com/${options.uri}`;
+    options.uri = `http://127.0.0.1:8080/${options.uri}`;
     return options;
   };
 
   const videoSource = await fptplay.getVideoSource({ id: animeId, episode });
 
-  var player = videojs("my_video_1");
   player.src({
     src: videoSource,
     type: "application/x-mpegURL",
@@ -92,6 +168,8 @@ async function loadPlayer(animeId, episode = 1) {
   player.maxQualitySelector({
     defaultQuality: 2,
   });
+
+  onLoadedMetadata();
 }
 
 async function search() {
@@ -128,19 +206,22 @@ document
   .addEventListener("click", async (event) => {
     if (event.target.className !== "anime-title info") return;
 
-    animeId = event.target.parentElement.dataset.id;
-    const max = event.target.parentElement.dataset.max;
+    const target = event.target.parentElement;
+    animeId = target.dataset.id;
+    const max = target.dataset.max;
+    const title = target.querySelector(".anime-title.info").innerText;
     await loadEpisodes(max);
-    await loadPlayer(animeId);
+    await loadPlayer({ title });
   });
 
 document
   .querySelector(".episodes-content")
   .addEventListener("click", async (event) => {
-    if (event.target.className !== "episode-title info") return;
+    if (event.target.tagName.toLowerCase() !== "button") return;
 
-    const episode = event.target.parentElement.dataset.episode;
-    await loadPlayer(animeId, episode);
+    episode = event.target.parentElement.dataset.episode;
+    const title = document.querySelector(".current .title").innerText;
+    await loadPlayer({ title });
   });
 
 let typingTimer; //timer identifier
@@ -829,3 +910,21 @@ function second(e) {
     return t;
   })(n);
 }
+
+// const videoSource =
+//   "http://vod02-cdn.fptplay.net/ovod/_definst_/mp4:mp4/fplay/720p/tvseries/anime/sakurasou/sakurasou_no_pet_na_kanojo_ep02.mp4/playlist.m3u8?token=eyJoYXNoX3ZhbHVlIjogIjVhMTBmYjJlZjI2ODAzMTQ5YTU0OGFmZWQ4NDgzMzQ5IiwgInZpZGVvX2lkIjogIjU0N2VkYWNjMTdkYzEzNDZmMWJkNjAwMiIsICJzZXJ2ZXJfdGltZSI6IDE1OTc5MzY1NDksICJ2YWxpZF9taW51dGVzIjogNzIwfQ";
+
+// videojs.Hls.xhr.beforeRequest = function (options) {
+//   options.uri = `http://127.0.0.1:8080/${options.uri}`;
+//   return options;
+// };
+
+// var player = videojs("my_video_1");
+// player.src({
+//   src: videoSource,
+//   type: "application/x-mpegURL",
+// });
+
+// player.maxQualitySelector({
+//   defaultQuality: 2,
+// });
