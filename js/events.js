@@ -3,6 +3,7 @@ document
   .querySelector(".search-results")
   .addEventListener("click", async (event) => {
     if (event.target.className !== "anime-title info") return;
+    episode = null;
 
     const target = event.target.parentElement;
     animeId = target.dataset.id;
