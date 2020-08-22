@@ -1,12 +1,33 @@
-var player = videojs("my_video_1");
+var player = videojs("my_video_1", {
+  autoplay: true,
+  controlBar: {
+    children: {
+      playToggle: {},
+      volumePanel: {
+        inline: true,
+      },
+      nextEpisode: {},
+      ProgressControl: {},
+      RemainingTimeDisplay: {},
+      fullscreenToggle: {},
+    },
+  },
+});
+
 let animeId;
 let episode;
+let title;
 const fptplay = new FPTPlay();
 
 player.ready(function () {
   this.hotkeys({
     seekStep: 10,
   });
+});
+
+player.on("error", function () {
+  console.log(player.error());
+  loadPlayer();
 });
 
 player.on("timeupdate", function () {
@@ -48,12 +69,12 @@ function onLoadedMetadata() {
   player.currentTime(lastTime);
 }
 
-function loadEpisodes(max) {
+function loadEpisodes(latestEpisode) {
   const parent = document.querySelector(".episodes-list");
 
   removeChild(parent);
 
-  for (let i = 1; i <= max; i++) {
+  for (let i = 1; i <= latestEpisode; i++) {
     const holder = document.createElement("div");
     const button = document.createElement("button");
 
@@ -67,14 +88,15 @@ function loadEpisodes(max) {
   }
 }
 
-async function loadPlayer({ title }) {
-  if (localStorage[animeId] && !episode) {
-    episode = JSON.parse(localStorage[animeId])["latest"];
+async function loadPlayer() {
+  const latest = JSON.parse(localStorage[animeId])["latest"];
+  if (latest && !episode) {
+    episode = latest;
   } else if (!episode) {
     episode = 1;
   }
 
-  updateInfo(title);
+  updateInfo();
 
   document.querySelector(".wrapper").style.display = "block";
 
@@ -92,12 +114,16 @@ async function loadPlayer({ title }) {
   onLoadedMetadata();
 }
 
-function updateInfo(title) {
+function updateInfo() {
   const currentTitle = document.querySelector(".current .title");
   const currentEpisode = document.querySelector(".current .episode");
   const currentButton = document.querySelector(
-    `[data-episode="${episode}"] button`
+    `div[data-episode="${episode}"] button`
   );
+
+  if (!currentButton) {
+    console.log(`div[data-episode="${episode}"] button`);
+  }
 
   document
     .querySelector(".episodes-list")
@@ -127,7 +153,7 @@ async function search() {
     titleElement.className = "anime-title info";
     viewsElement.className = "anime-views info";
 
-    animeHolder.dataset.max = episode_latest;
+    animeHolder.dataset.latestEpisode = episode_latest;
     animeHolder.dataset.id = _id;
     thumbnailElement.src = thumb;
     titleElement.innerText = title;

@@ -7,10 +7,10 @@ document
 
     const target = event.target.parentElement;
     animeId = target.dataset.id;
-    const max = target.dataset.max;
-    const title = target.querySelector(".anime-title.info").innerText;
-    await loadEpisodes(max);
-    await loadPlayer({ title });
+    const latestEpisode = target.dataset.latestEpisode;
+    title = target.querySelector(".anime-title.info").innerText;
+    await loadEpisodes(latestEpisode);
+    await loadPlayer();
   });
 
 // Check if episode button is clicked
@@ -20,8 +20,7 @@ document
     if (event.target.tagName.toLowerCase() !== "button") return;
 
     episode = event.target.parentElement.dataset.episode;
-    const title = document.querySelector(".current .title").innerText;
-    await loadPlayer({ title });
+    await loadPlayer();
   });
 
 let typingTimer;
