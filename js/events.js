@@ -7,9 +7,10 @@ document
 
     const target = event.target.parentElement;
     animeId = target.dataset.id;
-    const latestEpisode = target.dataset.latestEpisode;
+    localStorage[animeId] = "{}";
+    latestEpisode = target.dataset.latestEpisode;
     title = target.querySelector(".anime-title.info").innerText;
-    await loadEpisodes(latestEpisode);
+    await loadEpisodes();
     await loadPlayer();
   });
 

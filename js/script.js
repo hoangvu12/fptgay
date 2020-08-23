@@ -1,3 +1,9 @@
+let animeId;
+let episode;
+let title;
+let latestEpisode;
+const fptplay = new FPTPlay();
+
 var player = videojs("my_video_1", {
   autoplay: true,
   controlBar: {
@@ -6,6 +12,7 @@ var player = videojs("my_video_1", {
       volumePanel: {
         inline: true,
       },
+      previousEpisode: {},
       nextEpisode: {},
       ProgressControl: {},
       RemainingTimeDisplay: {},
@@ -14,11 +21,6 @@ var player = videojs("my_video_1", {
   },
 });
 
-let animeId;
-let episode;
-let title;
-const fptplay = new FPTPlay();
-
 player.ready(function () {
   this.hotkeys({
     seekStep: 10,
@@ -26,7 +28,7 @@ player.ready(function () {
 });
 
 player.on("error", function () {
-  console.log(player.error());
+  console.log("Player error:", player.error());
   loadPlayer();
 });
 
@@ -59,8 +61,10 @@ function onLoadedMetadata() {
   const storage = JSON.parse(localStorage[animeId]);
   let time;
   if (!episode) {
-    const latestEpisode = storage["latest"];
-    time = storage[latestEpisode]["time"];
+    const latest = storage["latest"];
+    time = storage[latest]["time"];
+  } else if (!("episode" in storage) || !("time" in storage[episode])) {
+    time = 0;
   } else {
     time = storage[episode]["time"];
   }
@@ -69,7 +73,7 @@ function onLoadedMetadata() {
   player.currentTime(lastTime);
 }
 
-function loadEpisodes(latestEpisode) {
+function loadEpisodes() {
   const parent = document.querySelector(".episodes-list");
 
   removeChild(parent);
@@ -89,9 +93,9 @@ function loadEpisodes(latestEpisode) {
 }
 
 async function loadPlayer() {
-  const latest = JSON.parse(localStorage[animeId])["latest"];
-  if (latest && !episode) {
-    episode = latest;
+  // const latest = JSON.parse(localStorage[animeId])["latest"];
+  if (localStorage[animeId].includes("latest") && !episode) {
+    episode = JSON.parse(localStorage[animeId])["latest"];
   } else if (!episode) {
     episode = 1;
   }

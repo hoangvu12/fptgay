@@ -1,0 +1,1 @@
+var Button=videojs.getComponent("Button"),MyButton=videojs.extend(Button,{constructor:function(){Button.apply(this,arguments),this.addClass("vjs-icon-previous-item")},handleClick:function(){return 1>=episode?alert("\u0110\xE2y l\xE0 t\u1EADp \u0111\u1EA7u ti\xEAn!"):void(episode=parseInt(episode)-1,loadPlayer())}});videojs.registerComponent("previousEpisode",MyButton);
