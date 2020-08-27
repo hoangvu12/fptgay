@@ -46,7 +46,7 @@ class Player {
       animeHolder.className = "anime-item";
       thumbnailElement.className = "anime-thumbnail";
       titleElement.className = "anime-title info";
-      viewsElement.className = "anime-views info";
+      viewsElement.className = "anime-episodes info";
 
       animeHolder.dataset.latestEpisode = episode_latest;
       animeHolder.dataset.id = _id;

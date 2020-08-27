@@ -1,42 +1,37 @@
 const player = new Player();
-let typingTimer;
+const episodesContent_div = document.querySelector(".episodes-content");
+const darkSwitch_input = document.querySelector("#dark-switch");
+const darkSwitch_label = document.querySelector(".custom-control-label");
 const doneTypingInterval = 2000;
+let typingTimer;
 
 // Check if one of anime result is clicked
-document
-  .querySelector(".search-results")
-  .addEventListener("click", async (event) => {
-    if (event.target.className !== "anime-title info") return;
-    player.episode = null;
+searchResults_div.addEventListener("click", async (event) => {
+  if (event.target.className !== "anime-title info") return;
+  player.episode = null;
 
-    const target = event.target.parentElement;
-    localStorage[player.animeId] = "{}";
-    player.animeId = target.dataset.id;
-    player.latestEpisode = target.dataset.latestEpisode;
-    player.title = target.querySelector(".anime-title.info").innerText;
+  const target = event.target.parentElement;
+  localStorage[player.animeId] = "{}";
+  player.animeId = target.dataset.id;
+  player.latestEpisode = target.dataset.latestEpisode;
+  player.title = target.querySelector(".anime-title.info").innerText;
 
-    await player.loadEpisodes();
-    await player.loadPlayer();
-  });
+  await player.loadEpisodes();
+  await player.loadPlayer();
+});
 
 // Check if episode button is clicked
-document
-  .querySelector(".episodes-content")
-  .addEventListener("click", async (event) => {
-    if (event.target.tagName.toLowerCase() !== "button") return;
+episodesContent_div.addEventListener("click", async (event) => {
+  if (event.target.tagName.toLowerCase() !== "button") return;
 
-    player.episode = event.target.parentElement.dataset.episode;
-    await player.loadPlayer();
-  });
+  player.episode = event.target.parentElement.dataset.episode;
+  await player.loadPlayer();
+});
 
-const darkSwitch = document.querySelector("#dark-switch");
-
-darkSwitch.addEventListener("change", async (event) => {
-  const darkSwitch_label = document.querySelector(".custom-control-label");
-  if (darkSwitch.checked) {
+darkSwitch_input.addEventListener("change", async (event) => {
+  if (darkSwitch_input.checked) {
     darkSwitch_label.style.color = "white";
     document.body.style.backgroundColor = "#181818";
-
     return;
   }
   darkSwitch_label.style.color = "black";
@@ -50,7 +45,7 @@ animeName_input.addEventListener("keyup", () => {
   }
 });
 
-var video = videojs("my_video_1", {
+var video = videojs("player", {
   autoplay: true,
   controlBar: {
     children: {
@@ -90,6 +85,7 @@ video.on("timeupdate", function () {
 
   const currentPlayTime = video.currentTime();
 
+  // Get latest episode's user watching
   let max = Number(player.episode);
   for (let key in episodesHolder) {
     if (Number(key) >= max) {

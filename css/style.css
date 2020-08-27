@@ -21,6 +21,7 @@ body {
   padding: 50px;
   display: none;
   border-radius: 12px;
+  margin: 20px;
 }
 
 .wrapper > div {
@@ -60,8 +61,11 @@ body {
 
 .episodes-item,
 .anime-item {
-  padding: 20px;
+  padding: 13px;
   border: 1px solid black;
+  border-radius: 12px;
+  background: #333;
+  margin: 12px auto;
 }
 
 .info {
@@ -69,13 +73,20 @@ body {
   padding-bottom: 10px;
 }
 
-.episode-title,
 .anime-title,
 .current h1 {
   font-size: 22px;
-  color: #1ab394;
+  color: #1ab394; /*1ab394*/
   margin: 0;
   font-family: "Open Sans", sans-serif;
+}
+
+.anime-title:hover {
+  font-size: 22px;
+  color: #048a6f;
+  margin: 0;
+  font-family: "Open Sans", sans-serif;
+  cursor: pointer;
 }
 
 .current h1 {
@@ -83,8 +94,7 @@ body {
   color: #f5740a;
 }
 
-.episode-views,
-.anime-views {
+.anime-episodes {
   color: #ccc;
   margin: 0;
   font-family: "Open Sans", sans-serif;
@@ -99,7 +109,6 @@ body {
 
 .search-results {
   margin: 20px auto;
-  background: #333;
   width: 50%;
 }
 
@@ -123,9 +132,9 @@ button {
   margin-top: 10px;
   width: 120px;
 }
-button:hover,
-button:focus {
-  color: #f5740a;
+button:hover {
+  background-color: #f5740a;
+  color: white;
 }
 
 button:active {
