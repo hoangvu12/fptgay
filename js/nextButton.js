@@ -6,9 +6,10 @@ var MyButton = videojs.extend(Button, {
     /* initialize your button */
   },
   handleClick: function () {
-    if (episode >= latestEpisode) return alert("Đây đã là tập mới nhất!");
-    episode = parseInt(episode) + 1;
-    loadPlayer();
+    if (player.episode >= player.latestEpisode)
+      return alert("Đây đã là tập mới nhất!");
+
+    player.loadEpisode(parseInt(player.episode) + 1);
   },
 });
 

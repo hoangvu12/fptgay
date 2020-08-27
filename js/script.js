@@ -1,170 +1,120 @@
-let animeId;
-let episode;
-let title;
-let latestEpisode;
+const searchResults_div = document.querySelector(".search-results");
+const animeName_input = document.querySelector("#animeName");
+const episodesList_div = document.querySelector(".episodes-list");
 const fptplay = new FPTPlay();
 
-var player = videojs("my_video_1", {
-  autoplay: true,
-  controlBar: {
-    children: {
-      playToggle: {},
-      volumePanel: {
-        inline: true,
-      },
-      previousEpisode: {},
-      nextEpisode: {},
-      ProgressControl: {},
-      RemainingTimeDisplay: {},
-      fullscreenToggle: {},
-    },
-  },
-});
-
-player.ready(function () {
-  this.hotkeys({
-    seekStep: 10,
-  });
-});
-
-player.on("error", function () {
-  console.log("Player error:", player.error());
-  loadPlayer();
-});
-
-player.on("timeupdate", function () {
-  let episodesHolder;
-  if (!localStorage[animeId]) {
-    episodesHolder = {};
-  } else {
-    episodesHolder = JSON.parse(localStorage[animeId]);
+class Player {
+  constructor() {
+    this.animeId;
+    this.episode;
+    this.title;
+    this.latestEpisode;
+    // fptplay = new FPTPlay();
   }
 
-  if (!episode) episode = 1;
+  loadEpisode(episode) {
+    this.episode = episode;
+    this.loadPlayer();
+  }
 
-  const currentPlayTime = player.currentTime();
+  loadEpisodes() {
+    removeChild(episodesList_div);
 
-  let max = Number(episode);
-  for (let key in episodesHolder) {
-    if (Number(key) >= max) {
-      max = Number(key);
+    for (let i = 1; i <= this.latestEpisode; i++) {
+      const holder = document.createElement("div");
+      const button = document.createElement("button");
+
+      holder.className = "episode-button";
+      holder.dataset.episode = i;
+      button.className = "episode";
+      button.innerText = `Tập ${i}`;
+
+      addChildren(holder, [button]);
+      episodesList_div.appendChild(holder);
     }
   }
 
-  episodesHolder["latest"] = String(max);
+  async search() {
+    removeChild(searchResults_div);
+    const results = await fptplay.search(animeName_input.value);
 
-  episodesHolder[episode] = { time: currentPlayTime };
-  localStorage[animeId] = JSON.stringify(episodesHolder);
-});
+    results.forEach(({ _id, title, thumb, duration, episode_latest }) => {
+      const animeHolder = document.createElement("div");
+      const thumbnailElement = document.createElement("img");
+      const titleElement = document.createElement("div");
+      const viewsElement = document.createElement("div");
+      animeHolder.className = "anime-item";
+      thumbnailElement.className = "anime-thumbnail";
+      titleElement.className = "anime-title info";
+      viewsElement.className = "anime-views info";
 
-function onLoadedMetadata() {
-  const storage = JSON.parse(localStorage[animeId]);
-  let time;
-  if (!episode) {
-    const latest = storage["latest"];
-    time = storage[latest]["time"];
-  } else if (!("episode" in storage) || !("time" in storage[episode])) {
-    time = 0;
-  } else {
-    time = storage[episode]["time"];
+      animeHolder.dataset.latestEpisode = episode_latest;
+      animeHolder.dataset.id = _id;
+      thumbnailElement.src = thumb;
+      titleElement.innerText = title;
+      viewsElement.innerText = duration;
+
+      addChildren(animeHolder, [thumbnailElement, titleElement, viewsElement]);
+
+      searchResults_div.appendChild(animeHolder);
+    });
   }
 
-  var lastTime = time.toString().split(".")[0];
-  player.currentTime(lastTime);
-}
+  async loadPlayer() {
+    if (!localStorage[this.animeId])
+      localStorage[this.animeId] = JSON.stringify({});
 
-function loadEpisodes() {
-  const parent = document.querySelector(".episodes-list");
+    if (localStorage[this.animeId].includes("latest") && !this.episode) {
+      this.episode = JSON.parse(localStorage[this.animeId])["latest"];
+    } else if (!this.episode) {
+      this.episode = 1;
+    }
 
-  removeChild(parent);
+    this.updateInfo();
 
-  for (let i = 1; i <= latestEpisode; i++) {
-    const holder = document.createElement("div");
-    const button = document.createElement("button");
+    document.querySelector(".wrapper").style.display = "block";
 
-    holder.className = "episode-button";
-    holder.dataset.episode = i;
-    button.className = "episode";
-    button.innerText = `Tập ${i}`;
+    videojs.Hls.xhr.beforeRequest = function (options) {
+      options.uri = `https://general-proxy.herokuapp.com/${options.uri}`;
+      return options;
+    };
 
-    addChildren(holder, [button]);
-    parent.appendChild(holder);
-  }
-}
+    const videoSource = await fptplay.getVideoSource({
+      id: this.animeId,
+      episode: this.episode,
+    });
 
-async function loadPlayer() {
-  // const latest = JSON.parse(localStorage[animeId])["latest"];
-  if (localStorage[animeId].includes("latest") && !episode) {
-    episode = JSON.parse(localStorage[animeId])["latest"];
-  } else if (!episode) {
-    episode = 1;
-  }
+    video.src({
+      src: videoSource,
+      type: "application/x-mpegURL",
+    });
 
-  updateInfo();
+    video.maxQualitySelector({
+      defaultQuality: 2,
+    });
 
-  document.querySelector(".wrapper").style.display = "block";
-
-  const videoSource = await fptplay.getVideoSource({ id: animeId, episode });
-
-  player.src({
-    src: videoSource,
-    type: "application/x-mpegURL",
-  });
-
-  player.maxQualitySelector({
-    defaultQuality: 2,
-  });
-
-  onLoadedMetadata();
-}
-
-function updateInfo() {
-  const currentTitle = document.querySelector(".current .title");
-  const currentEpisode = document.querySelector(".current .episode");
-  const currentButton = document.querySelector(
-    `div[data-episode="${episode}"] button`
-  );
-
-  if (!currentButton) {
-    console.log(`div[data-episode="${episode}"] button`);
+    onLoadedMetadata();
   }
 
-  document
-    .querySelector(".episodes-list")
-    .querySelectorAll("*")
-    .forEach((e) => (e.style.color = "white"));
+  updateInfo() {
+    const currentTitle = document.querySelector(".current .title");
+    const currentEpisode = document.querySelector(".current .episode");
+    const currentButton = document.querySelector(
+      `div[data-episode="${this.episode}"] button`
+    );
 
-  currentButton.style.color = "#f5740a";
-  currentEpisode.dataset.episode = episode;
-  currentEpisode.innerText = `Tập ${episode}`;
-  currentTitle.innerText = title;
-}
+    if (!currentButton) {
+      console.log(`div[data-episode="${this.episode}"] button`);
+    }
 
-async function search() {
-  const parent = document.querySelector(".search-results");
-  const animeName = document.querySelector("#animeName").value;
-  removeChild(parent);
+    document
+      .querySelector(".episodes-list")
+      .querySelectorAll("*")
+      .forEach((e) => (e.style.color = "white"));
 
-  const data = await fptplay.search(animeName);
-
-  data.forEach(({ _id, title, thumb, duration, episode_latest }) => {
-    const animeHolder = document.createElement("div");
-    const thumbnailElement = document.createElement("img");
-    const titleElement = document.createElement("div");
-    const viewsElement = document.createElement("div");
-    animeHolder.className = "anime-item";
-    thumbnailElement.className = "anime-thumbnail";
-    titleElement.className = "anime-title info";
-    viewsElement.className = "anime-views info";
-
-    animeHolder.dataset.latestEpisode = episode_latest;
-    animeHolder.dataset.id = _id;
-    thumbnailElement.src = thumb;
-    titleElement.innerText = title;
-    viewsElement.innerText = duration;
-
-    addChildren(animeHolder, [thumbnailElement, titleElement, viewsElement]);
-
-    parent.appendChild(animeHolder);
-  });
+    currentButton.style.color = "#f5740a";
+    currentEpisode.dataset.episode = this.episode;
+    currentEpisode.innerText = `Tập ${this.episode}`;
+    currentTitle.innerText = this.title;
+  }
 }
