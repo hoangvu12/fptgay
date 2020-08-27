@@ -29,6 +29,20 @@ document
     await player.loadPlayer();
   });
 
+const darkSwitch = document.querySelector("#dark-switch");
+
+darkSwitch.addEventListener("change", async (event) => {
+  const darkSwitch_label = document.querySelector(".custom-control-label");
+  if (darkSwitch.checked) {
+    darkSwitch_label.style.color = "white";
+    document.body.style.backgroundColor = "#181818";
+
+    return;
+  }
+  darkSwitch_label.style.color = "black";
+  document.body.style.backgroundColor = "#fff";
+});
+
 animeName_input.addEventListener("keyup", () => {
   clearTimeout(typingTimer);
   if (animeName_input.value) {

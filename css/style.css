@@ -1,5 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Baloo+Tamma+2:wght@500&family=Poppins&display=swap");
 
+body {
+  background-color: #181818;
+}
+
 .video {
   height: 540px;
   width: 960px;
@@ -16,6 +20,7 @@
   background: #333;
   padding: 50px;
   display: none;
+  border-radius: 12px;
 }
 
 .wrapper > div {
@@ -23,7 +28,7 @@
 }
 
 .episodes {
-  height: 540px;
+  height: 350px;
   width: 1140px;
   background: transparent;
 }
@@ -140,7 +145,7 @@ input[type="text"] {
   border-radius: 3px;
   outline: 0;
   transition: all 0.3s ease-in-out;
-  margin: 0 auto;
+  margin: 20px auto;
   font-size: 20px;
 }
 
@@ -152,4 +157,13 @@ input[type="text"] {
   margin-top: 5px;
   padding-right: 20px;
   padding-left: 27px;
+}
+
+.custom-control-label {
+  color: white;
+}
+
+.custom-switch {
+  left: 20px;
+  top: 10px;
 }
