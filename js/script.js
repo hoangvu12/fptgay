@@ -78,9 +78,13 @@ class Player {
     const latestEpisode_div = document.querySelector(
       `[data-episode="${Number(this.latestEpisode)}"]`
     );
-    const latestEpisodeTop = offset(latestEpisode_div).top;
 
-    wrapper_div.style.height = `${latestEpisodeTop - 150}px`;
+    const latestEpisodeTop = offset(latestEpisode_div).top;
+    const wrapperTop = offset(wrapper_div).top;
+
+    console.log(latestEpisodeTop, wrapperTop, latestEpisodeTop - wrapperTop);
+
+    wrapper_div.style.height = `${latestEpisodeTop - wrapperTop + 100}px`;
 
     videojs.Hls.xhr.beforeRequest = function (options) {
       options.uri = `https://general-proxy.herokuapp.com/${options.uri}`;
