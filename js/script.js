@@ -1,6 +1,7 @@
 const searchResults_div = document.querySelector(".search-results");
 const animeName_input = document.querySelector("#animeName");
 const episodesList_div = document.querySelector(".episodes-list");
+const wrapper_div = document.querySelector(".wrapper");
 const fptplay = new FPTPlay();
 
 class Player {
@@ -72,7 +73,14 @@ class Player {
 
     this.updateInfo();
 
-    document.querySelector(".wrapper").style.display = "block";
+    wrapper_div.style.display = "block";
+
+    const latestEpisode_div = document.querySelector(
+      `[data-episode="${Number(this.latestEpisode)}"]`
+    );
+    const latestEpisodeTop = offset(latestEpisode_div).top;
+
+    wrapper_div.style.height = `${latestEpisodeTop - 150}px`;
 
     videojs.Hls.xhr.beforeRequest = function (options) {
       options.uri = `https://general-proxy.herokuapp.com/${options.uri}`;
