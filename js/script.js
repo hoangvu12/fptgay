@@ -10,13 +10,24 @@ class Player {
     this.episode;
     this.title;
     this.latestEpisode;
+    this.duration;
     // fptplay = new FPTPlay();
   }
 
-  loadEpisode(episode) {
-    this.episode = episode;
+  nextEpisode() {
+    this.episode = parseInt(player.episode) + 1;
     this.loadPlayer();
   }
+
+  previousEpisode() {
+    this.episode = parseInt(player.episode) - 1;
+    this.loadPlayer();
+  }
+
+  // loadEpisode(episode) {
+  //   this.episode = episode;
+  //   this.loadPlayer();
+  // }
 
   loadEpisodes() {
     removeChild(episodesList_div);
@@ -76,13 +87,11 @@ class Player {
     wrapper_div.style.display = "block";
 
     const latestEpisode_div = document.querySelector(
-      `[data-episode="${Number(this.latestEpisode)}"]`
+      `div[data-episode="${Number(this.latestEpisode)}"]`
     );
 
     const latestEpisodeTop = offset(latestEpisode_div).top;
     const wrapperTop = offset(wrapper_div).top;
-
-    console.log(latestEpisodeTop, wrapperTop, latestEpisodeTop - wrapperTop);
 
     wrapper_div.style.height = `${latestEpisodeTop - wrapperTop + 100}px`;
 

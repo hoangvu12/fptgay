@@ -8,7 +8,7 @@ var MyButton = videojs.extend(Button, {
   handleClick: function () {
     if (player.episode <= 1) return alert("Đây là tập đầu tiên!");
 
-    player.loadEpisode(parseInt(player.episode) - 1);
+    player.previousEpisode();
   },
 });
 

@@ -73,6 +73,10 @@ video.on("error", function () {
   player.loadPlayer();
 });
 
+video.on("loadedmetadata", function () {
+  player.duration = video.duration();
+});
+
 video.on("timeupdate", function () {
   let episodesHolder;
   if (!localStorage[player.animeId]) {
@@ -97,6 +101,8 @@ video.on("timeupdate", function () {
 
   episodesHolder[player.episode] = { time: currentPlayTime };
   localStorage[player.animeId] = JSON.stringify(episodesHolder);
+
+  if (currentPlayTime >= player.duration) player.nextEpisode();
 });
 
 function onLoadedMetadata() {

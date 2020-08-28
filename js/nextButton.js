@@ -9,7 +9,7 @@ var MyButton = videojs.extend(Button, {
     if (player.episode >= player.latestEpisode)
       return alert("Đây đã là tập mới nhất!");
 
-    player.loadEpisode(parseInt(player.episode) + 1);
+    player.nextEpisode();
   },
 });
 
