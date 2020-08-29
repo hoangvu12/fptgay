@@ -2,6 +2,7 @@ const player = new Player();
 const episodesContent_div = document.querySelector(".episodes-content");
 const darkSwitch_input = document.querySelector("#dark-switch");
 const darkSwitch_label = document.querySelector(".custom-control-label");
+const proxySwitch_input = document.querySelector("#proxy-switch");
 const doneTypingInterval = 2000;
 let typingTimer;
 
@@ -28,14 +29,22 @@ episodesContent_div.addEventListener("click", async (event) => {
   await player.loadPlayer();
 });
 
-darkSwitch_input.addEventListener("change", async (event) => {
+darkSwitch_input.addEventListener("change", async () => {
+  const labels = Array.from(document.querySelectorAll(".custom-control-label"));
+
   if (darkSwitch_input.checked) {
-    darkSwitch_label.style.color = "white";
+    labels.forEach((label) => (label.style.color = "white"));
     document.body.style.backgroundColor = "#181818";
     return;
   }
-  darkSwitch_label.style.color = "black";
+
+  labels.forEach((label) => (label.style.color = "black"));
   document.body.style.backgroundColor = "#fff";
+});
+
+proxySwitch_input.addEventListener("change", function () {
+  player.proxy = proxySwitch_input.checked;
+  if (!video.paused()) player.loadPlayer();
 });
 
 animeName_input.addEventListener("keyup", () => {
@@ -78,12 +87,7 @@ video.on("loadedmetadata", function () {
 });
 
 video.on("timeupdate", function () {
-  let episodesHolder;
-  if (!localStorage[player.animeId]) {
-    episodesHolder = {};
-  } else {
-    episodesHolder = JSON.parse(localStorage[player.animeId]);
-  }
+  episodesHolder = JSON.parse(localStorage[player.animeId]) || {};
 
   if (!player.episode) player.episode = 1;
 
@@ -105,16 +109,19 @@ video.on("timeupdate", function () {
   if (currentPlayTime >= player.duration) player.nextEpisode();
 });
 
-function onLoadedMetadata() {
+function videoTime() {
   const storage = JSON.parse(localStorage[player.animeId]);
   let time;
   if (!player.episode) {
     const latest = storage["latest"];
     time = storage[latest]["time"];
+    console.log(`Latest episode time ${player.episode} ${time}`);
   } else if (!(player.episode in storage)) {
     time = 0;
+    console.log(`No episode time ${player.episode} ${time}`);
   } else {
     time = storage[player.episode]["time"];
+    console.log(`Current time ${player.episode} ${time}`);
   }
 
   var lastTime = time.toString().split(".")[0];

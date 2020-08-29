@@ -6,7 +6,7 @@ var MyButton = videojs.extend(Button, {
     /* initialize your button */
   },
   handleClick: function () {
-    if (player.episode >= player.latestEpisode)
+    if (Number(player.episode) >= Number(player.latestEpisode))
       return alert("Đây đã là tập mới nhất!");
 
     player.nextEpisode();
