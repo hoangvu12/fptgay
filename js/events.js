@@ -4,6 +4,7 @@ const darkSwitch_input = document.querySelector("#dark-switch");
 const darkSwitch_label = document.querySelector(".custom-control-label");
 const proxySwitch_input = document.querySelector("#proxy-switch");
 const doneTypingInterval = 2000;
+let retry = 0;
 let typingTimer;
 
 // Check if one of anime result is clicked
@@ -43,6 +44,7 @@ darkSwitch_input.addEventListener("change", async () => {
 });
 
 proxySwitch_input.addEventListener("change", function () {
+  retry = 0;
   player.proxy = proxySwitch_input.checked;
   if (!video.paused()) player.loadPlayer();
 });
@@ -79,7 +81,8 @@ video.ready(function () {
 
 video.on("error", function () {
   console.log("Player error:", video.error());
-  player.loadPlayer();
+  if (retry < 3) player.loadPlayer();
+  retry++;
 });
 
 video.on("loadedmetadata", function () {

@@ -5,8 +5,7 @@ body {
 }
 
 .video {
-  height: 540px;
-  width: 960px;
+  width: 75%;
 }
 
 .video > video-js {
@@ -25,12 +24,12 @@ body {
 }
 
 .wrapper > div {
-  margin: 20px;
+  margin: 10px;
 }
 
 .episodes {
   height: 350px;
-  width: 1140px;
+  width: 100%;
   background: transparent;
 }
 
