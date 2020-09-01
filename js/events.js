@@ -46,7 +46,7 @@ darkSwitch_input.addEventListener("change", async () => {
 proxySwitch_input.addEventListener("change", function () {
   retry = 0;
   player.proxy = proxySwitch_input.checked;
-  if (!video.paused()) player.loadPlayer();
+  player.loadPlayer();
 });
 
 animeName_input.addEventListener("keyup", () => {
@@ -80,7 +80,7 @@ video.ready(function () {
 });
 
 video.on("error", function () {
-  console.log("Player error:", video.error());
+  // console.log("Player error:", video.error());
   if (retry < 3) player.loadPlayer();
   retry++;
 });
@@ -118,13 +118,13 @@ function videoTime() {
   if (!player.episode) {
     const latest = storage["latest"];
     time = storage[latest]["time"];
-    console.log(`Latest episode time ${player.episode} ${time}`);
+    // console.log(`Latest episode time ${player.episode} ${time}`);
   } else if (!(player.episode in storage)) {
     time = 0;
-    console.log(`No episode time ${player.episode} ${time}`);
+    // console.log(`No episode time ${player.episode} ${time}`);
   } else {
     time = storage[player.episode]["time"];
-    console.log(`Current time ${player.episode} ${time}`);
+    // console.log(`Current time ${player.episode} ${time}`);
   }
 
   var lastTime = time.toString().split(".")[0];

@@ -68,28 +68,6 @@ class Player {
   }
 
   async loadPlayer() {
-    if (!localStorage[this.animeId])
-      localStorage[this.animeId] = JSON.stringify({});
-
-    if (localStorage[this.animeId].includes("latest") && !this.episode) {
-      this.episode = JSON.parse(localStorage[this.animeId])["latest"];
-    } else if (!this.episode) {
-      this.episode = 1;
-    }
-
-    this.updateInfo();
-
-    if (this.proxy) {
-      videojs.Hls.xhr.beforeRequest = function (options) {
-        options.uri = `https://general-proxy.herokuapp.com/${options.uri}`;
-        return options;
-      };
-    } else {
-      videojs.Hls.xhr.beforeRequest = function (options) {
-        return options;
-      };
-    }
-
     const videoSource = await fptplay.getVideoSource({
       id: this.animeId,
       episode: this.episode,
@@ -104,20 +82,42 @@ class Player {
       defaultQuality: 2,
     });
 
+    this.ready();
+  }
+
+  ready() {
+    this.getCurrentEpisode();
+    this.proxyMode();
+    this.updateInfo();
     videoTime();
   }
 
-  episodesSpace() {
+  proxyMode() {
+    if (this.proxy) {
+      videojs.Hls.xhr.beforeRequest = function (options) {
+        options.uri = `https://general-proxy.herokuapp.com/${options.uri}`;
+        return options;
+      };
+    } else {
+      videojs.Hls.xhr.beforeRequest = function (options) {
+        return options;
+      };
+    }
+  }
+
+  getCurrentEpisode() {
+    if (!localStorage[this.animeId])
+      localStorage[this.animeId] = JSON.stringify({});
+
+    if (localStorage[this.animeId].includes("latest") && !this.episode) {
+      this.episode = JSON.parse(localStorage[this.animeId])["latest"];
+    } else if (!this.episode) {
+      this.episode = 1;
+    }
+  }
+
+  showVideoWrapper() {
     wrapper_div.style.display = "block";
-
-    const latestEpisode_div = document.querySelector(
-      `div[data-episode="${Number(this.latestEpisode)}"]`
-    );
-
-    const latestEpisodeTop = offset(latestEpisode_div).top;
-    const wrapperTop = offset(wrapper_div).top;
-
-    wrapper_div.style.height = `${latestEpisodeTop - wrapperTop + 100}px`;
   }
 
   updateInfo() {
@@ -128,7 +128,7 @@ class Player {
     );
 
     if (!currentButton) {
-      console.log(`div[data-episode="${this.episode}"] button`);
+      // console.log(`div[data-episode="${this.episode}"] button`);
     }
 
     document
@@ -141,6 +141,6 @@ class Player {
     currentEpisode.innerText = `Tập ${this.episode}`;
     currentTitle.innerText = this.title;
 
-    this.episodesSpace();
+    this.showVideoWrapper();
   }
 }

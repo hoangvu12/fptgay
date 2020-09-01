@@ -5,7 +5,7 @@ body {
 }
 
 .video {
-  width: 75%;
+  width: 78%;
 }
 
 .video > video-js {
@@ -21,6 +21,7 @@ body {
   display: none;
   border-radius: 12px;
   margin: 20px;
+  /* height: max-content; */
 }
 
 .wrapper > div {
@@ -28,7 +29,7 @@ body {
 }
 
 .episodes {
-  height: 350px;
+  height: max-content;
   width: 100%;
   background: transparent;
 }
@@ -45,13 +46,13 @@ body {
 }
 
 .episodes-list {
-  height: 460px;
+  height: max-content;
   width: 100%;
   margin-top: -45px;
 }
 
 .episodes-content {
-  height: 460px;
+  height: max-content;
   width: 100%;
   background: transparent;
   margin-top: 50px;
