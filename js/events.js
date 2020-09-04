@@ -13,7 +13,6 @@ searchResults_div.addEventListener("click", async (event) => {
   player.episode = null;
 
   const target = event.target.parentElement;
-  localStorage[player.animeId] = "{}";
   player.animeId = target.dataset.id;
   player.latestEpisode = target.dataset.latestEpisode;
   player.title = target.querySelector(".anime-title.info").innerText;
@@ -27,11 +26,11 @@ episodesContent_div.addEventListener("click", async (event) => {
   if (event.target.tagName.toLowerCase() !== "button") return;
 
   player.episode = event.target.parentElement.dataset.episode;
-  await player.loadPlayer();
+  player.loadPlayer();
 });
 
 darkSwitch_input.addEventListener("change", async () => {
-  const labels = Array.from(document.querySelectorAll(".custom-control-label"));
+  const labels = [...document.querySelectorAll(".custom-control-label")];
 
   if (darkSwitch_input.checked) {
     labels.forEach((label) => (label.style.color = "white"));
@@ -64,8 +63,13 @@ video.ready(function () {
 
 video.on("error", function () {
   // console.log("Player error:", video.error());
-  if (retry < 3) player.loadPlayer();
-  retry++;
+  if (retry < 3) {
+    player.loadPlayer();
+    return retry++;
+  }
+  proxySwitch_input.checked = "checked";
+  player.proxy = true;
+  player.loadPlayer();
 });
 
 video.on("loadedmetadata", function () {
@@ -79,37 +83,26 @@ video.on("timeupdate", function () {
 
   const currentPlayTime = video.currentTime();
 
-  // Get latest episode's user watching
-  let max = Number(player.episode);
-  for (let key in episodesHolder) {
-    if (Number(key) >= max) {
-      max = Number(key);
-    }
-  }
-
-  episodesHolder["latest"] = String(max);
+  episodesHolder["latest"] = getLatestEpisode();
 
   episodesHolder[player.episode] = { time: currentPlayTime };
   localStorage[player.animeId] = JSON.stringify(episodesHolder);
 
-  if (currentPlayTime >= player.duration) player.nextEpisode();
+  if (
+    currentPlayTime >= player.duration &&
+    Number(player.episode) < Number(player.latestEpisode)
+  )
+    player.nextEpisode();
 });
 
-function videoTime() {
-  const storage = JSON.parse(localStorage[player.animeId]);
-  let time;
-  if (!player.episode) {
-    const latest = storage["latest"];
-    time = storage[latest]["time"];
-    // console.log(`Latest episode time ${player.episode} ${time}`);
-  } else if (!(player.episode in storage)) {
-    time = 0;
-    // console.log(`No episode time ${player.episode} ${time}`);
-  } else {
-    time = storage[player.episode]["time"];
-    // console.log(`Current time ${player.episode} ${time}`);
+function getLatestEpisode() {
+  // Get latest episode's user watching
+  let max = Number(player.episode);
+  for (let key in episodesHolder) {
+    if (Number(key) >= max && max <= player.latestEpisode) {
+      max = Number(key);
+    }
   }
 
-  var lastTime = time.toString().split(".")[0];
-  video.currentTime(lastTime);
+  return String(max);
 }

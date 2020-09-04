@@ -19,6 +19,7 @@ var video = videojs("player", {
     },
   },
 });
+
 const previousButton = video.controlBar.previousEpisode;
 const nextEpisode = video.controlBar.nextEpisode;
 const fptplay = new FPTPlay();
@@ -31,14 +32,6 @@ class Player {
     this.latestEpisode;
     this.duration;
     this.proxy = false;
-  }
-
-  disableButton(button) {
-    button.disable();
-  }
-
-  enableButton(button) {
-    button.enable();
   }
 
   nextEpisode() {
@@ -95,6 +88,8 @@ class Player {
   }
 
   async loadPlayer() {
+    this.ready();
+
     const videoSource = await fptplay.getVideoSource({
       id: this.animeId,
       episode: this.episode,
@@ -109,7 +104,7 @@ class Player {
       defaultQuality: 2,
     });
 
-    this.ready();
+    this.updateVideoTime();
   }
 
   ready() {
@@ -117,16 +112,15 @@ class Player {
     this.proxyMode();
     this.updateInfo();
     this.buttons();
-    videoTime();
   }
 
   buttons() {
-    if (this.episode <= 1) this.disableButton(previousButton);
-    else this.enableButton(previousButton);
+    if (this.episode <= 1) previousButton.disable();
+    else previousButton.enable();
 
     if (Number(this.episode) >= Number(this.latestEpisode))
-      this.disableButton(nextEpisode);
-    else this.enableButton(nextEpisode);
+      nextEpisode.disable();
+    else nextEpisode.enable();
   }
 
   proxyMode() {
@@ -164,10 +158,6 @@ class Player {
       `div[data-episode="${this.episode}"] button`
     );
 
-    if (!currentButton) {
-      // console.log(`div[data-episode="${this.episode}"] button`);
-    }
-
     document
       .querySelector(".episodes-list")
       .querySelectorAll("*")
@@ -179,5 +169,24 @@ class Player {
     currentTitle.innerText = this.title;
 
     this.showVideoWrapper();
+  }
+
+  updateVideoTime() {
+    const storage = JSON.parse(localStorage[player.animeId]);
+    let time;
+    if (!player.episode) {
+      const latest = storage["latest"];
+      time = storage[latest]["time"];
+      // console.log(`Latest episode time ${player.episode}: ${time}`);
+    } else if (!(player.episode in storage)) {
+      time = 0;
+      // console.log(`No episode time ${player.episode}: ${time}`);
+    } else {
+      time = storage[player.episode]["time"];
+      // console.log(`Current time ${player.episode}: ${time}`);
+    }
+
+    let lastTime = Math.floor(time).toString();
+    video.currentTime(lastTime);
   }
 }
