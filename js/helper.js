@@ -1,4 +1,12 @@
 /**
+ *
+ * @param {DOMNode} button
+ */
+function disableButton(button) {
+  button.style.cursor = "not allowed";
+}
+
+/**
  * Add elements array to specify element
  *
  * @param {DOMNode} parent the element you want to append child to

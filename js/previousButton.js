@@ -3,11 +3,10 @@ var MyButton = videojs.extend(Button, {
   constructor: function () {
     Button.apply(this, arguments);
     this.addClass("vjs-icon-previous-item");
+    // this.addClass("vjs-disabled");
     /* initialize your button */
   },
   handleClick: function () {
-    if (player.episode <= 1) return alert("Đây là tập đầu tiên!");
-
     player.previousEpisode();
   },
 });

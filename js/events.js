@@ -56,23 +56,6 @@ animeName_input.addEventListener("keyup", () => {
   }
 });
 
-var video = videojs("player", {
-  autoplay: true,
-  controlBar: {
-    children: {
-      playToggle: {},
-      volumePanel: {
-        inline: true,
-      },
-      previousEpisode: {},
-      nextEpisode: {},
-      ProgressControl: {},
-      RemainingTimeDisplay: {},
-      fullscreenToggle: {},
-    },
-  },
-});
-
 video.ready(function () {
   this.hotkeys({
     seekStep: 10,

@@ -2,6 +2,25 @@ const searchResults_div = document.querySelector(".search-results");
 const animeName_input = document.querySelector("#animeName");
 const episodesList_div = document.querySelector(".episodes-list");
 const wrapper_div = document.querySelector(".wrapper");
+
+var video = videojs("player", {
+  autoplay: true,
+  controlBar: {
+    children: {
+      playToggle: {},
+      volumePanel: {
+        inline: true,
+      },
+      previousEpisode: {},
+      nextEpisode: {},
+      ProgressControl: {},
+      RemainingTimeDisplay: {},
+      fullscreenToggle: {},
+    },
+  },
+});
+const previousButton = video.controlBar.previousEpisode;
+const nextEpisode = video.controlBar.nextEpisode;
 const fptplay = new FPTPlay();
 
 class Player {
@@ -12,6 +31,14 @@ class Player {
     this.latestEpisode;
     this.duration;
     this.proxy = false;
+  }
+
+  disableButton(button) {
+    button.disable();
+  }
+
+  enableButton(button) {
+    button.enable();
   }
 
   nextEpisode() {
@@ -89,7 +116,17 @@ class Player {
     this.getCurrentEpisode();
     this.proxyMode();
     this.updateInfo();
+    this.buttons();
     videoTime();
+  }
+
+  buttons() {
+    if (this.episode <= 1) this.disableButton(previousButton);
+    else this.enableButton(previousButton);
+
+    if (Number(this.episode) >= Number(this.latestEpisode))
+      this.disableButton(nextEpisode);
+    else this.enableButton(nextEpisode);
   }
 
   proxyMode() {

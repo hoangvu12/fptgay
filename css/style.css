@@ -179,3 +179,6 @@ input[type="text"] {
   left: 20px;
   top: 10px;
 }
+.vjs-disabled {
+  cursor: not-allowed;
+}
