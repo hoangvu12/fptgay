@@ -1,12 +1,4 @@
 /**
- *
- * @param {DOMNode} button
- */
-function disableButton(button) {
-  button.style.cursor = "not allowed";
-}
-
-/**
  * Add elements array to specify element
  *
  * @param {DOMNode} parent the element you want to append child to
@@ -56,28 +48,4 @@ function serialize(obj) {
       str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
     }
   return str.join("&");
-}
-
-function isWindow(obj) {
-  return obj != null && obj === obj.window;
-}
-function getWindow(elem) {
-  return isWindow(elem) ? elem : elem.nodeType === 9 && elem.defaultView;
-}
-function offset(elem) {
-  var docElem,
-    win,
-    box = { top: 0, left: 0 },
-    doc = elem && elem.ownerDocument;
-
-  docElem = doc.documentElement;
-
-  if (typeof elem.getBoundingClientRect !== typeof undefined) {
-    box = elem.getBoundingClientRect();
-  }
-  win = getWindow(doc);
-  return {
-    top: box.top + win.pageYOffset - docElem.clientTop,
-    left: box.left + win.pageXOffset - docElem.clientLeft,
-  };
 }
